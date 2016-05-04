@@ -1,0 +1,65 @@
+libruncmd is part of POSIX Exempli Gratia (POSIX by example)
+
+Copyright (c) 2015 Francisco Jose Monaco <monaco@icmc.usp.br>
+
+This is Free Open Source Software. For licensing, see COPYING
+
+POSIX-eg repository can be found at https://gitlab.com/monaco/posixeg
+
+Modified by Emanuel Valente <emanuelvalente@gmail.com>,
+            Ariella Yamada  <ariella.y.b@gmail> and 
+            Marcio Campos   <marciodscampos@gmail.com>
+
+
+OVERVIEW
+---------------------------------------------
+Libruncmd executes a program in a subprocess. 
+Its synopsis is the following:
+
+int runcmd(const char *command, int *result, const int[3] io);
+
+void (*runcmd_onexit)(void) = NULL;
+
+For more details, see the manpage or check on $(PREFIX)/docs after 
+installation.
+
+
+EXAMPLE
+---------------------------------------------
+runcmd ("ls foo", &result, NULL);
+
+executes the 'ls'. If 'ls' runs successfully and file 'foo' is found,
+EXECOK(result), IS_NONBLOCK(result) and IS_NORMTERM(result), all them
+return true and EXITSTATUS(result) returns o (ls returns 0 on success);
+if 'foo' is not found, EXITSTATUS(result) returns 2 (ls man page).
+
+runcmd ("nosuchfile", &result, NULL);
+
+if 'nosuchfile' cannot be executed, EXECOK(result) returns false, 
+IS_NONBLOCK(result) returns true, IS_NORMTERM(result) returns false
+and EXITSTATUS(result) return EXECFAILSTATUS.
+
+
+INSTALLATION
+----------------------------------------------
+- To build the library, both in static and in shared forms:
+
+$make
+
+- To install the library in $(PREFIX)/lib and the headers
+in $(PREFIX)/include (PREFIX is a Makefile variable):
+   
+$make install
+
+- To uninstall what 'install' rule has installed:
+
+$make uninstall
+
+- To pack source for distribution:
+$make dist		
+   
+- To verify whether the distributed source can be correctly
+built (i.e. it has all the needed files)   :
+
+$make distcheck	
+

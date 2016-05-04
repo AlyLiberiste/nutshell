@@ -26,6 +26,18 @@
 #include <errno.h>
 #include <signal.h>
 #include <string.h>
+/*libruncmd is part of POSIX Exempli Gratia (POSIX by example)
+
+Copyright (c) 2015 Francisco Jose Monaco <monaco@icmc.usp.br>
+
+This is Free Open Source Software. For licensing, see COPYING
+
+POSIX-eg repository can be found at https://gitlab.com/monaco/posixeg
+
+Modified by Emanuel Valente <emanuelvalente@gmail.com>,
+            Ariella Yamada  <ariella.y.b@gmail> and 
+            Marcio Campos   <marciodscampos@gmail.com>
+*/
 
 #include <runcmd.h>
 #include <debug.h>
@@ -41,10 +53,9 @@
 
 int runcmd (const char *command, int *result, int *io) /* ToDO: const char* */
 {
-  int pid, status; 
+  int pid, status, pipeid[2];
   int aux, i, tmp_result;
-  char *args[RCMD_MAXARGS], *p, *cmd; 	
-
+  char *args[RCMD_MAXARGS], *p, *cmd, buff;
 
   tmp_result = 0;
 
@@ -61,6 +72,10 @@ int runcmd (const char *command, int *result, int *io) /* ToDO: const char* */
 
   /* Create a subprocess. */
 
+  /*using pipe to discover if there was error of
+   * execution: ex: ./foo (=wont set EXECOK)*/
+  pipe(pipeid);
+
   pid = fork();
   sysfail (pid<0, -1);
 
@@ -68,15 +83,39 @@ int runcmd (const char *command, int *result, int *io) /* ToDO: const char* */
     {
       aux = wait (&status);
       sysfail (aux<0, -1);
+
+      /*if aux has one byte -> EXECOK
+       * otherwhise (has two bytes) -> ./foo
+        won't set EXECOK*/
+      aux = read(pipeid[0], &buff, 2);
       
       /* Collect termination mode. */
-      if (WIFEXITED(status)) 
-	tmp_result |= NORMTERM;
+      if (WIFEXITED(status) && aux == 1)
+        {
+          tmp_result |= EXECOK;
+          tmp_result |= NORMTERM;
+          tmp_result |= (WEXITSTATUS(status) & RETSTATUS) ;
+        }
+
+      /*at this point (./fooo (no such file) !EXECOK
+       * we just want to set exit returned value*/
+      else
+         tmp_result |= (WEXITSTATUS(status) & RETSTATUS) ;
+
     }
-  else				/* Subprocess (child) */
+  else	/* Subprocess (child) */
     {
+
+      /*write one byte on pipe*/
+      buff = 0;
+      write(pipeid[1], &buff, 1);
       aux = execvp (args[0], args);
-      exit (EXECFAILSTATUS);
+      /*write more one byte (error) on pipe
+       *at this point we have two bytes on it*/
+      buff = 1;
+      write(pipeid[1], &buff, 1);
+
+      exit(EXECFAILSTATUS);
     }
 
   if (result)
