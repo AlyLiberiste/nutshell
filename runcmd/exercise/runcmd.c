@@ -88,11 +88,7 @@ int runcmd (const char *command, int *result, int *io) /* ToDO: const char* */
       /*at this point (./fooo (no such file) !EXECOK
        * we just want to set exit returned value*/
       else
-        {
          tmp_result |= (WEXITSTATUS(status) & RETSTATUS) ;
-
-        }
-
 
     }
   else	/* Subprocess (child) */
@@ -110,7 +106,7 @@ int runcmd (const char *command, int *result, int *io) /* ToDO: const char* */
       exit(EXECFAILSTATUS);
     }
 
-  if (result && aux)
+  if (result)
     *result = tmp_result;
 
   free (p);
