@@ -148,7 +148,7 @@ int main (int argc, char **argv)
   pid = try_runcmd (cmd3, &result, NULL);   /* Normal, success. */
   printf ("  Checking...\n");
 
-  nerrors += check ("abnormal termination is correctly reported", 
+  nerrors += check ("abnormal termination is correctly reported",
 		    (!IS_NORMTERM(result)) && 
 		    (EXITSTATUS(result) == 0));
   /* Check */
@@ -193,7 +193,7 @@ int main (int argc, char **argv)
   printf ("  Checking...\n");
 
   nerrors += check ("exec failure is correctly reported (a)", 
-		    (!IS_EXECOK(result)) &&
+                    (!IS_EXECOK(result)) &&
 		    (EXITSTATUS(result) == EXECFAILSTATUS));
   
   /* Check */
