@@ -1,21 +1,29 @@
-# Makefile - A handy template for C projetcts (with GCC)
+# Makefile - Nutshell makefile
 #
-# Copyright (c) 2015, Monaco F. J. <moanco@icmc.usp.br>
 #
-# This file is part of POSIXeg.
+#   Copyright (c) 2016 Emanuel Valente <emanuelvalente@gmail.com> 
+#              2016 Ariella Yamada  <ariella.y.b@gmail> and    
+#              2016 Marcio Campos   <marciodscampos@gmail.com> 
 #
-# POSIXeg is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+#   Nutshell libruncmd and this Makefile are derived from POSIXeg, 
+#   Copyright (c) 2014 Francisco Jose Monaco
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+#   POSIXeg repository can be found at https://gitlab.com/monaco/posixeg
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   This file is part of Nutshell
+#
+#   Nutshell is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 # Directions: 

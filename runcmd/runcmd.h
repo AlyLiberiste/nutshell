@@ -1,10 +1,17 @@
 /* runcmd.h - Header of libruncmd.
 
-   Copyright (c) 2014, Francisco José Monaco <moanco@icmc.usp.br>
+   Copyright (c) 2016 Emanuel Valente <emanuelvalente@gmail.com> 
+              2016 Ariella Yamada  <ariella.y.b@gmail> and    
+              2016 Marcio Campos   <marciodscampos@gmail.com> 
 
-   This file is part of POSIXeg
+   Nutshell libruncmd is derived from POSIXeg 
+   libruncmd, Copyright (c) 2014 Francisco Jose Monaco
 
-   POSIXeg is free software: you can redistribute it and/or modify
+   POSIXeg repository can be found at https://gitlab.com/monaco/posixeg
+
+   This file is part of Nutshell
+
+   Nutshell is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
@@ -16,7 +23,7 @@
    
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
 */
 
 #ifndef RUNCMD_H
