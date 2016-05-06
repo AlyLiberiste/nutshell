@@ -1,14 +1,15 @@
-libruncmd is part of POSIX Exempli Gratia (POSIX by example)
+Nutshell libruncmd is an implementation of POSIXeg libruncmd.
 
-Copyright (c) 2015 Francisco Jose Monaco <monaco@icmc.usp.br>
+Copyright (c) 2016 Emanuel Valente <emanuelvalente@gmail.com> 
+              2016 Ariella Yamada  <ariella.y.b@gmail> and    
+              2016 Marcio Campos   <marciodscampos@gmail.com> 
+
+   Nutshell libruncmd is derived from POSIXeg 
+   libruncmd, Copyright (c) 2014 Francisco Jose Monaco
+
+   POSIXeg repository can be found at https://gitlab.com/monaco/posixeg
 
 This is Free Open Source Software. For licensing, see COPYING
-
-POSIX-eg repository can be found at https://gitlab.com/monaco/posixeg
-
-Modified by Emanuel Valente <emanuelvalente@gmail.com>,
-            Ariella Yamada  <ariella.y.b@gmail> and 
-            Marcio Campos   <marciodscampos@gmail.com>
 
 
 OVERVIEW
