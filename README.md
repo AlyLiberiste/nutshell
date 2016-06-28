@@ -1,17 +1,15 @@
-# nutshell
-NutShell
+# NutShell
 
-How to build:
+----------------------
+- How to build:
 
 $ cd nutshell
-
 $ ./autogen.sh
-
 $ ./configure
-
 $ make
 
 
-How to run:
+- How to run:
 
 $ shell/nutshell
+ 
