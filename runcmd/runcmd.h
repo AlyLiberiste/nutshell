@@ -1,26 +1,17 @@
 /* runcmd.h - Header of libruncmd.
 
-   Copyright (c) 2016 Emanuel Valente <emanuelvalente@gmail.com> 
-              2016 Ariella Yamada  <ariella.y.b@gmail> and    
-              2016 Marcio Campos   <marciodscampos@gmail.com> 
+   Copyright (c) 2016 Emanuel Valente <emanuelvalente@gmail.com>
 
-   Nutshell libruncmd is derived from POSIXeg 
-   libruncmd, Copyright (c) 2014 Francisco Jose Monaco
-
+   Nutshell is derived from POSIXeg Fool Shell -
+   https://gitlab.com/monaco/posixeg/shell/foolsh
+   Copyright (c) 2014 Francisco Jose Monaco
    POSIXeg repository can be found at https://gitlab.com/monaco/posixeg
 
-   This file is part of Nutshell
-
-   Nutshell is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -42,33 +33,34 @@
 #define NONBLOCK    (1 << 10)	/* 2048 */
 #define RETSTATUS   (0xFF)	/* 255 */
 
-/*  
+/*
  *   This is the user API.
  */
 
 /* Macros to obtain information on command execution results
    reported by 'runcmd' call.
 
-   IS_NORMTERM(result) returns true if the subprocess has terminated 
+   IS_NORMTERM(result) returns true if the subprocess has terminated
                        normally; false otherwise.
    IS_NONBLOCK(result) returns true if the subprocess has been executed
                        in nonblocking mode; false otherwise.
-   IS_EXECOK(result)   returns true if 'command' has been effectively 
-		       executed; false otherwise.
+   IS_EXECOK(result)   returns true if 'command' has been effectively
+                       executed; false otherwise.
                        the subprocess; false otherwise.
    EXITSTATUS(result)  returns the exit status returned by the
                        subproccess.
 
 */
 
-#define IS_NORMTERM(result) ((result & NORMTERM) && 1) 
-#define IS_NONBLOCK(result) ((result & NONBLOCK) && 1) 
+#define IS_NORMTERM(result) ((result & NORMTERM) && 1)
+#define IS_NONBLOCK(result) ((result & NONBLOCK) && 1)
 #define EXITSTATUS(result)  ( result & RETSTATUS)
 #define IS_EXECOK(result)   ((result & EXECOK) && 1)
 
 /* Subprocess' exit status upon exec failure.*/
 
 #define EXECFAILSTATUS 127
+#define MAX_PID_VALUE 32768 /*2^15*/
 
 /* Run a command in a subprocess. */
 
