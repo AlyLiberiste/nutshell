@@ -4,8 +4,11 @@
 - How to build:
 
 $ cd nutshell
+
 $ ./autogen.sh
+
 $ ./configure
+
 $ make
 
 
