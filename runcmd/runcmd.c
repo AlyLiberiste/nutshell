@@ -35,8 +35,6 @@
 #include <runcmd.h>
 #include <debug.h>
 
-void signal_from_child_handler(int signal, siginfo_t* info, void *u);
-int is_nonblock_array[MAX_PID_VALUE];
 
 /* Executes 'command' in a subprocess. Information on the subprocess execution
    is stored in 'result' after its completion, and can be inspected with the
@@ -52,7 +50,10 @@ int runcmd (const char *command, int *result,  int *io) /* ToDO: const char* */
   int aux, total_args, i, tmp_result, is_nonblock;
   char *args[RCMD_MAXARGS], *p, *cmd, buff;
   struct sigaction act;
+  void *rp;
 
+  rp = memset(&act, 0, sizeof(struct sigaction)); /* Clear all. */
+  sysfatal (!rp);
 
   tmp_result = 0;
   is_nonblock = 0;
@@ -77,30 +78,19 @@ int runcmd (const char *command, int *result,  int *io) /* ToDO: const char* */
       tmp_result |= NONBLOCK;
       /*overwrites '&'*/
       args[total_args -1] = NULL;
+
     }
 
   /*using pipe to discover if there was error of
   * execution: ex: ./foo (=wont set EXECOK)*/
   pipe(pipeid);
 
-  /*clean signal handlers*/
-  if(! memset(&act, 0, sizeof(struct sigaction)) )
-    sysfail(1, 0);
-
-
   /* Create a subprocess. */
   pid = fork();
   sysfail (pid<0, -1);
 
-  if (IS_NONBLOCK(tmp_result) && runcmd_onexit != NULL)
-    {
-      struct sigaction sa_runcmd;
-      sa_runcmd.sa_sigaction = signal_from_child_handler;
-      sysfail(sigaction(SIGCHLD, &sa_runcmd, NULL) < 0, -1);
-    }
 
-
-  if (pid>0)			/* Caller process (parent). */
+  if (pid>0)/* Caller process (parent). */
     {
 
       if(!is_nonblock)
@@ -130,6 +120,10 @@ int runcmd (const char *command, int *result,  int *io) /* ToDO: const char* */
     }
   else /* Subprocess (child) */
     {
+      /*in child we can send signals like by ctrl+c*/
+      signal(SIGINT, SIG_DFL);
+      signal(SIGTSTP, SIG_DFL);
+
       /*verifies if we should redirect I/O*/
 
       if(io)
@@ -152,7 +146,7 @@ int runcmd (const char *command, int *result,  int *io) /* ToDO: const char* */
 
       if(is_nonblock)
         /*fix me*/
-        setpgid(0, 0);
+         setpgid(getpid(), 0);
 
       aux = execvp (args[0], args);
 
@@ -184,10 +178,6 @@ int runcmd (const char *command, int *result,  int *io) /* ToDO: const char* */
 
 void (*runcmd_onexit)(void) = NULL;
 
-void signal_from_child_handler(int sig, siginfo_t *info, void *u)
-{
-	if (runcmd_onexit != NULL)
-		runcmd_onexit();
-}
+
 
 

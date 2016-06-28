@@ -29,6 +29,7 @@ Copyright (c) 2016 Emanuel Valente <emanuelvalente@gmail.com>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <signal.h>
 #include <tparse.h>
 #include <debug.h>
 #include <user_level.h>
@@ -43,6 +44,8 @@ char *prompt;
 /* void test(void); */
 
 int go_on = 1;			/* This variable controls the main loop. */
+
+void ignore_signals();
 
 int main (int argc, char **argv)
 {
@@ -67,11 +70,12 @@ int main (int argc, char **argv)
   while (go_on)
     {
       /* Prompt. */
+      ignore_signals();
 
       printf ("%s ", prompt);
       fflush (stdout);
       aux = read_command_line (command_line);
-      sysfatal (aux<0);
+      /*sysfatal (aux<0);*/
 
       /* Parse command line (see tparse.*) */
 
@@ -140,4 +144,13 @@ int main (int argc, char **argv)
 
   return EXIT_SUCCESS;
 }
+
+
+void ignore_signals()
+{
+  signal(SIGTSTP, SIG_IGN);
+  signal(SIGINT,  SIG_IGN);
+  /*signal(SIGCHLD, SIG_IGN)*/;
+}
+
 
