@@ -14,5 +14,5 @@ $ make
 
 - How to run:
 
-$ shell/nutshell
+$ ./shell/nutshell
  
