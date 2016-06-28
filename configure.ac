@@ -31,7 +31,11 @@ LT_INIT                         dnl Libtool support in 'configure'
 
 AC_PROG_CC			dnl Define CC
 
+dnl Define variables to be used by Automake
 
+AC_SUBST([CPP_FLAGS],"--ansi -D_POSIX_C_SOURCE=200112L -Werror --pedantic-errors -Wall") dnl Define flags
+AC_SUBST([C_FLAGS])
+AC_SUBST([LD_FLAGS])
 
 AC_CONFIG_FILES([Makefile shell/Makefile runcmd/Makefile])	dnl Name output files
 AC_OUTPUT			dnl Do output

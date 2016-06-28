@@ -47,14 +47,13 @@ int go_on = 1;			/* This variable controls the main loop. */
 int main (int argc, char **argv)
 {
   buffer_t *command_line;
-  int i, j, aux;
+  int i, aux;
   int result;
   char *cmd;
+  pipeline_t *pipeline;
 
   /*process the prompt string*/
   prompt = get_prompt();
-
-  pipeline_t *pipeline;
 
   command_line = new_command_line ();
 

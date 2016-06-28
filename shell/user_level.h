@@ -25,5 +25,5 @@
 char *get_prompt();
 
 
-#endif // USER_LEVEL_H
+#endif /* USER_LEVEL_H*/
 

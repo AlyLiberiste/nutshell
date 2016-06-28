@@ -40,7 +40,7 @@
 
 void exec_pipeline_one_command(pipeline_t *pipeline)
 {
-  int i, j, result;
+  int j, result;
   char *cmd;
 
   /*prepares cmd buffer*/
@@ -63,7 +63,7 @@ void exec_pipeline_one_command(pipeline_t *pipeline)
 
 void exec_pipeline_redir_input(pipeline_t *pipeline, int index)
 {
-  int i, j, result, tmp, fd;
+  int j, result, tmp;
   char *cmd;
   int *io;
 
@@ -97,7 +97,7 @@ void exec_pipeline_redir_input(pipeline_t *pipeline, int index)
 
 void exec_pipeline_redir_output(pipeline_t *pipeline, int index)
 {
-  int i, j, result, tmp, fd;
+  int j, result, tmp;
   char *cmd;
   int *io;
 
@@ -131,7 +131,7 @@ void exec_pipeline_redir_output(pipeline_t *pipeline, int index)
 
 void exec_pipeline_redir_input_output(pipeline_t *pipeline, int index)
 {
-  int i, j, result, tmp1, tmp2;
+  int j, result, tmp1, tmp2;
   char *cmd;
   int *io;
 

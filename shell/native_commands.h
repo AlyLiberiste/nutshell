@@ -27,5 +27,5 @@
 
 int parse_native_command(char*);
 
-#endif // NATIVE_COMMANDS_H
+#endif /* NATIVE_COMMANDS_H*/
 

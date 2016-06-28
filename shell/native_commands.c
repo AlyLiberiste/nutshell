@@ -24,7 +24,7 @@
 */
 
 #include <native_commands.h>
-#include <strings.h>
+#include <string.h>
 
 char *native_commands[] = {"exit", "jobs"};
 
