@@ -99,6 +99,11 @@
 #define sysdebug(expression) \
        debug(expression, strerror(errno))
 
+#define sysfault(expression, return_status)						\
+  do { if (expression) {fprintf (stderr, "%s: %s: %d: %s: %s\n",	\
+  "Fault ", __FILE__, __LINE__,\
+  __PRETTY_FUNCTION__, strerror (errno)); \
+  return (return_status);}} while (0)
 
 
 /* #define sysfatal(expression) \ */

@@ -1,20 +1,19 @@
 /* tparse.h - A trivial command line parser example.
 
-   Copyright (c) 2016 Emanuel Valente <emanuelvalente@gmail.com>
+   Copyright (c) 2015, Monaco F. J. <moanco@icmc.usp.br>
 
-   Nutshell is derived from POSIXeg
-   Copyright (c) 2014 Francisco Jose Monaco
-   POSIXeg repository can be found at https://gitlab.com/monaco/posixeg
-   This file is part of Nutshell
-   Nutshell is free software: you can redistribute it and/or modify
+   This file is part of POSIXeg.
+
+   POSIXeg is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
+   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-
+   
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -28,6 +27,8 @@
 
 #define MAX_FILENAME 1024  /* Maximum length of a filename IO redirection).*/
 
+#define MAX_BUFF_COMMAND 1024
+
 /* Struct to read the command line. */
 
 typedef struct buffer_t
@@ -37,7 +38,7 @@ typedef struct buffer_t
   char *buffer;			/* String. */
 } buffer_t;
 
-/* Return a pointer to a newly allocated and properly initialized
+/* Return a pointer to a newly allocated and properly initialized 
    buffer_t block or NULL on error. */
 
 buffer_t * new_command_line (void);
@@ -50,7 +51,7 @@ void release_command_line (buffer_t *);
    grows as needed in steps of BUFFER_STEP bytes. Buffer does not
    shrinks autmatically.*/
 
-int read_command_line (buffer_t *);
+int read_command_line (buffer_t *); 
 
 #define FOREGROUND 0		/* Run in foregroud. */
 #define BACKGROUND 1		/* Run in background. */

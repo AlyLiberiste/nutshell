@@ -28,6 +28,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <tparse.h>
@@ -36,7 +37,6 @@
 #include <exec_pipeline.h>
 #include <debug.h>
 
-#define MAX_BUFF_COMMAND 512
 
 void exec_pipeline_one_command(pipeline_t *pipeline)
 {
@@ -166,4 +166,54 @@ void exec_pipeline_redir_input_output(pipeline_t *pipeline, int index)
 
 }
 
+
+
+void execute_pipeline(pipeline_t * pipeline, int pipeA[2], int index)
+{
+  int pid, pipeB[2], ret;
+
+  if (index < 0)
+    return;
+
+  if (index > 0) {
+      ret = pipe(pipeB);
+      fatal(ret < 0, "Could not create pipe.");
+    }
+
+
+  pid = fork();
+  fatal(pid < 0, "Could not create process");
+
+  /* Parent: exec */
+  if (pid > 0) {
+
+      /* Not last, redirect input */
+      if (index > 0) {
+          close(0);
+          dup(pipeB[0]);
+          close(pipeB[0]);
+        }
+
+      /* Not first, redirect output */
+      if (index < pipeline->ncommands - 1) {
+          close(1);
+          dup(pipeA[1]);
+          close(pipeA[1]);
+        }
+      else
+
+      /* Not used. */
+      if (index > 0)
+        close(pipeB[1]);
+
+      /* Run command */
+      execvp(pipeline->command[index][0], pipeline->command[index]);
+
+      /* Child: recurse */
+    } else {
+      execute_pipeline(pipeline, pipeB, index - 1);
+      return;
+    }
+
+}
 

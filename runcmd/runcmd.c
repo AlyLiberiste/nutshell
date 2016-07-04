@@ -36,6 +36,17 @@
 #include <debug.h>
 
 
+/* SIGCHLD handler. */
+static void sigchld_hdl (int sig)
+{
+	/* Wait for all dead processes.
+	 * We use a non-blocking call to be sure this signal handler will not
+	 * block if a child was cleaned up in another part of the program. */
+	while (waitpid(-1, NULL, WNOHANG) > 0) {
+	}
+
+}
+
 /* Executes 'command' in a subprocess. Information on the subprocess execution
    is stored in 'result' after its completion, and can be inspected with the
    aid of macros made available for this purpose. Argument 'io' is a pointer
@@ -54,6 +65,12 @@ int runcmd (const char *command, int *result,  int *io) /* ToDO: const char* */
 
   rp = memset(&act, 0, sizeof(struct sigaction)); /* Clear all. */
   sysfatal (!rp);
+  act.sa_handler = sigchld_hdl;
+
+  if (sigaction(SIGCHLD, &act, 0)) {
+      perror ("sigaction");
+      return 1;
+    }
 
   tmp_result = 0;
   is_nonblock = 0;

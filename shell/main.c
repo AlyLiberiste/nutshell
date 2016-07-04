@@ -29,6 +29,9 @@ Copyright (c) 2016 Emanuel Valente <emanuelvalente@gmail.com>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 #include <signal.h>
 #include <tparse.h>
 #include <debug.h>
@@ -36,21 +39,33 @@ Copyright (c) 2016 Emanuel Valente <emanuelvalente@gmail.com>
 #include <native_commands.h>
 #include <exec_pipeline.h>
 #include <runcmd.h>
+#include <assert.h>
 
 #define PROMPT "@NutShell:"
-#define MAX_BUFF_COMMAND 512
+
 char *prompt;
 
 /* void test(void); */
 
 int go_on = 1;			/* This variable controls the main loop. */
 
+void sigchld_handler (int sig) {
+    assert(sig == SIGCHLD);
+    int status;
+    pid_t child;
+    while ((child = waitpid(-1, &status, WNOHANG)) > 0) {
+        /*...do something with exited child's status */
+    }
+}
+
+
 void ignore_signals();
+
 
 int main (int argc, char **argv)
 {
   buffer_t *command_line;
-  int i, aux;
+  int i=0, aux;
   int result;
   char *cmd;
   pipeline_t *pipeline;
@@ -66,6 +81,7 @@ int main (int argc, char **argv)
   cmd = (char*)malloc(sizeof(char) * MAX_BUFF_COMMAND);
 
   /* This is the main loop. */
+  setpgid(0, 0);
 
   while (go_on)
     {
@@ -75,7 +91,7 @@ int main (int argc, char **argv)
       printf ("%s ", prompt);
       fflush (stdout);
       aux = read_command_line (command_line);
-      /*sysfatal (aux<0);*/
+      sysfatal (aux<0);
 
       /* Parse command line (see tparse.*) */
 
@@ -92,11 +108,16 @@ int main (int argc, char **argv)
 		 && !REDIRECT_STDOUT(pipeline))
 		{
 		  /*check if the command is native from shell*/
-		  result = parse_native_command(*pipeline->command[0]);
+		  result = parse_native_command(pipeline, 0);
 		  if(result == EXIT_COMMAND)
 		    {
 		      go_on = 0;
 		      continue;
+		    }
+		  else
+		    {
+		      if(result == REGULAR_NATIVE_COMMAND)
+			continue;
 		    }
 
 		  exec_pipeline_one_command(pipeline);
@@ -105,23 +126,19 @@ int main (int argc, char **argv)
 	      /*more than one command*/
 	      /*possible to redirect*/
 	      else {
-		  for (i=0; pipeline->command[i][0]; i++)
-		    {
-		      if ( REDIRECT_STDIN(pipeline) &&  REDIRECT_STDOUT(pipeline))
-			  exec_pipeline_redir_input_output(pipeline, i);
+		  if ( REDIRECT_STDIN(pipeline) &&  REDIRECT_STDOUT(pipeline))
+		    exec_pipeline_redir_input_output(pipeline, i);
 
-		      else if ( REDIRECT_STDOUT(pipeline))
-			    exec_pipeline_redir_output(pipeline, i);
+		  else if ( REDIRECT_STDOUT(pipeline))
+		    exec_pipeline_redir_output(pipeline, i);
 
-		      else
-			{
-			  if ( REDIRECT_STDIN(pipeline))
-			     exec_pipeline_redir_input(pipeline, i);
+		  else
 
-			}
+		    if ( REDIRECT_STDIN(pipeline))
+		      exec_pipeline_redir_input(pipeline, i);
 
-		    }
-
+		    else
+		      execute_pipeline(pipeline, NULL, pipeline->ncommands -1);
 		}
 	    }/*IF FOREGROUND*/
 
@@ -150,7 +167,7 @@ void ignore_signals()
 {
   signal(SIGTSTP, SIG_IGN);
   signal(SIGINT,  SIG_IGN);
-  /*signal(SIGCHLD, SIG_IGN)*/;
+  signal(SIGCHLD, sigchld_handler);
 }
 
 

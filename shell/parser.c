@@ -1,22 +1,19 @@
-/* parser.c - a simple parser for NutShell
+/* parser.c - a simple parser for foosh
 
-   Copyright (c) 2016 Emanuel Valente <emanuelvalente@gmail.com>
-              2016 Ariella Yamada  <ariella.y.b@gmail> and
-              2016 Marcio Campos   <marciodscampos@gmail.com>
-   Nutshell is derived from POSIXeg Fool Shell -
-   https://gitlab.com/monaco/posixeg/shell/foolsh
-   Copyright (c) 2015 Francisco Jose Monaco <monaco@icmc.usp.br>
-   POSIXeg repository can be found at https://gitlab.com/monaco/posixeg
-   Nutshell is free software: you can redistribute it and/or modify
+   Copyright (c) 2015, Monaco F. J. <moanco@icmc.usp.br>
+
+   This file is part of POSIXeg.
+
+   POSIXeg is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-
+   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-
+   
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
@@ -78,28 +75,28 @@ int read_command_line (buffer_t *command_line)
 
       /* Read howmany bytes. */
 
-      read_bytes = read (1, offset, howmany);
+      read_bytes = read (1, offset, howmany);      
       count += read_bytes;
 
       /* This happens also if the previous read left
-         a trailing newline. */
+	 a trailing newline. */
       if (offset[0]=='\n')
-        {
-          offset[0]='\0';
-          command_line->length=0;
-          return --count;
-        }
+	{
+	  offset[0]='\0';
+	  command_line->length=0;
+	  return --count;
+	}
 
-
+      
       read_more = 0;
       if (read_bytes < howmany)
-        offset[read_bytes-1] = '\0'; /* We read less than howmany; done. */
+	offset[read_bytes-1] = '\0'; /* We read less than howmany; done. */
       else
-        if (offset[read_bytes-1] == '\n')
-          offset[read_bytes-1] = '\0'; /* We read exactly howmany; done. */
-        else			       /* There is more to read. */
-          {
-            /* Enlarge buffer. */
+	if (offset[read_bytes-1] == '\n')
+	  offset[read_bytes-1] = '\0'; /* We read exactly howmany; done. */
+	else			       /* There is more to read. */
+	  {
+	    /* Enlarge buffer. */
 
 	    temp = command_line->size;
 	    p = realloc (command_line->buffer, (temp + BUFFER_STEP)*sizeof(char));
@@ -112,7 +109,7 @@ int read_command_line (buffer_t *command_line)
 
 	    read_more = 1;
 	  }
-
+      
     }
 
   command_line->length = count;
@@ -129,7 +126,7 @@ pipeline_t *new_pipeline (void)
 
   pipeline = malloc (1*sizeof(pipeline_t));
   sysfail (!pipeline, NULL);
-
+  
 
   /* Allocate a pipeline structure. */
 
@@ -146,14 +143,14 @@ pipeline_t *new_pipeline (void)
     {
       pipeline->command[i] = malloc ((MAX_ARGUMENTS+1)*sizeof (char*));
       if (!pipeline->command[i])
-        {
-          sysdebug(1);
-          for (j=0; j<i; j++)
-              free (pipeline->command[j]);
-          free(pipeline->command);
-          free (pipeline);
-          return NULL;
-        }
+      	{
+      	  sysdebug(1);
+      	  for (j=0; j<i; j++)
+      	      free (pipeline->command[j]);
+      	  free(pipeline->command);
+      	  free (pipeline);
+      	  return NULL;
+      	} 
     }
 
   pipeline->ground = FOREGROUND;
@@ -178,12 +175,12 @@ void release_pipeline (pipeline_t *pipeline)
     }
 }
 
-#define isblk(c) ((c==' ') || (c=='\t') || (c=='\n')  )
+#define isblk(c) ((c==' ') || (c=='\t') || (c=='\n')  ) 
 
 
-enum
+enum 
   {
-    PARSER_TOO_MANY_ARGUMENTS=1,
+    PARSER_TOO_MANY_ARGUMENTS=1, 
     PARSER_TOO_MANY_COMMANDS=2,
     PARSER_STUFF_AFTER_AMP=4
   } parser_error_t;
@@ -218,16 +215,16 @@ int find_modifiers (buffer_t *command_line, pipeline_t *pipeline)
   len=amp;
 
   /* Find output redirect. */
-
+  
   lt = strcspn (command_line->buffer, "<");
   if (lt!=len)
     {
       for (i=lt+1; isblk(command_line->buffer[i]); i++);
       /* printf ("lt found (%s)\n", command_line->buffer+i); */
       j=0;
-      while ((i<len) && (i<MAX_FILENAME) &&
-             (!isblk(command_line->buffer[i])) && (command_line->buffer[i]!='<'))
-        pipeline->file_in[j++]=command_line->buffer[i++];
+      while ((i<len) && (i<MAX_FILENAME) && 
+	     (!isblk(command_line->buffer[i])) && (command_line->buffer[i]!='<'))
+	pipeline->file_in[j++]=command_line->buffer[i++];
       pipeline->file_in[j]='\0';
     }
   /* printf ("lt now (%s)\n", pipeline->file_in); */
@@ -239,8 +236,8 @@ int find_modifiers (buffer_t *command_line, pipeline_t *pipeline)
       /* printf ("gt found (%s)\n", command_line->buffer+i); */
       j=0;
       while ((i<len)  && (i<MAX_FILENAME) &&
-             (!isblk(command_line->buffer[i])) && (command_line->buffer[i]!='<'))
-        pipeline->file_out[j++]=command_line->buffer[i++];
+	     (!isblk(command_line->buffer[i])) && (command_line->buffer[i]!='<'))
+	pipeline->file_out[j++]=command_line->buffer[i++];
       pipeline->file_out[j]='\0';
     }
   /* printf ("gt now (%s)\n", pipeline->file_out); */
@@ -250,9 +247,9 @@ int find_modifiers (buffer_t *command_line, pipeline_t *pipeline)
   command_line->buffer[k-1]='\0';
   command_line->length=k;
 
-
+  
   debug (truncated && PARSER_STUFF_AFTER_AMP, "Nothing allowed after '&'");
-
+  
   return truncated;
 
 }
@@ -287,38 +284,37 @@ int parse_command_line (buffer_t *command_line, pipeline_t *pipeline)
 
   i = 0;
     while((i<MAX_COMMANDS) &&
-        (token = strtok_r (i==0 ? command_line->buffer : NULL, "|", &bkstring)))
+	(token = strtok_r (i==0 ? command_line->buffer : NULL, "|", &bkstring)))
     {
       while ((token[0] == ' ') || (token[0] == '\t'))
-        token++;
-
+	token++;
+      
       j=0;
       while ((j<MAX_ARGUMENTS) &&
-             (token2 = strtok (j == 0 ? token : NULL, " \t")))
-        {
-          pipeline->command[i][j] = token2;
-          j++;
-        }
+	     (token2 = strtok (j == 0 ? token : NULL, " \t")))
+	{
+	  pipeline->command[i][j] = token2;
+	  j++;
+	}
 
       pipeline->command[i][j] = NULL;
       i++;
       truncated |= strtok (NULL, " \t") ? PARSER_TOO_MANY_ARGUMENTS : 0;
 
       pipeline->narguments[i-1] = j;
-
+      
     }
     pipeline->command[i][0]=NULL;
     truncated |= strtok_r (NULL, " \t", &bkstring) ? PARSER_TOO_MANY_COMMANDS : 0;
-
+    
     pipeline->ncommands = i;
-
+    
 
     debug (truncated & PARSER_TOO_MANY_ARGUMENTS, "Too many arguments in a command");
     debug (truncated & PARSER_TOO_MANY_COMMANDS, "Too many commands in a pipeline");
 
   return truncated;
 }
-
 
 
 

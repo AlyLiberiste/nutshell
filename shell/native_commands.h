@@ -24,8 +24,13 @@
 #define REGULAR_NATIVE_COMMAND 1
 #define USER_COMMAND 0
 
+#include <tparse.h>
 
-int parse_native_command(char*);
+int parse_native_command(pipeline_t*, int);
+void exec_native_jobs(char*);
+void exec_native_cd(char*);
+void exec_native_pwd();
+
 
 #endif /* NATIVE_COMMANDS_H*/
 

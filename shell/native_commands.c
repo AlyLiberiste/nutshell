@@ -23,27 +23,112 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <native_commands.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 
-char *native_commands[] = {"exit", "jobs"};
+#include <native_commands.h>
+char *native_commands[] = {"exit", "jobs", "cd", "pwd"};
 
-int parse_native_command(char *cmd)
+int parse_native_command(pipeline_t *pipeline, int index)
 {
-  int i=0;
+  char *cmd;
+  int i=0, j=0;
+
+  /*prepares cmd buffer*/
+  cmd = (char*)malloc(sizeof(char) * MAX_BUFF_COMMAND);
+
+  strncpy(cmd, pipeline->command[index][0], MAX_BUFF_COMMAND);
+
+
+  /*process args*/
+  for (j=1; pipeline->command[index][j]; j++)
+    {
+      strncat(cmd, " ", MAX_BUFF_COMMAND);
+      strncat(cmd, pipeline->command[index][j], MAX_BUFF_COMMAND);
+    }
 
   while(native_commands[i])
     {
-      if(strcmp(native_commands[i++], cmd) == 0)
+      if(strncmp(native_commands[i], cmd, strlen(native_commands[i])) == 0)
         {
           if(strcmp(cmd, "exit") == 0)
-            return EXIT_COMMAND;
+            {
+              free(cmd);
+              return EXIT_COMMAND;
+            }
           else
-            return REGULAR_NATIVE_COMMAND;
+            {
+              if(strncmp(cmd, "jobs", 4) == 0)
+                /*pass first argument (jobid)*/
+                exec_native_jobs(pipeline->command[index][1]);
+
+              if(strncmp(cmd, "cd", 2) == 0)
+                /*pass first argument (dir)*/
+                exec_native_cd(pipeline->command[index][1]);
+
+              if(strncmp(cmd, "pwd", 3) == 0)
+                exec_native_pwd();
+
+            }
+
+          free(cmd);
+          return REGULAR_NATIVE_COMMAND;
         }
+      i++;
 
     }
 
+  free(cmd);
   return USER_COMMAND;
 
 }
+
+void exec_native_jobs(char *arg)
+{
+  printf("====> jobs %s\n", arg);
+}
+
+void exec_native_cd(char *arg)
+{
+  int ret;
+  char *homedir;
+
+  /*user want to redir to home*/
+  if(!arg)
+    {
+      if ((homedir = getenv("HOME")) == NULL)
+        homedir = getpwuid(getuid())->pw_dir;
+
+      ret = chdir(homedir);
+      if(ret < 0)
+        fprintf(stderr, "Could not change to directory: %s\n", homedir);
+    }
+  else
+    {
+      ret = chdir(arg);
+
+      if(ret < 0)
+        fprintf(stderr, "Could not change to directory: %s\n", arg);
+    }
+
+
+}
+
+void exec_native_pwd()
+{
+  char *ret;
+  char buff[512];
+
+  ret = getcwd(buff, sizeof(buff));
+  if(!ret)
+    fprintf(stderr, "Current directory is too long!\n");
+  else
+    /*prints current directory*/
+      printf("%s\n", buff);
+}
+
+
