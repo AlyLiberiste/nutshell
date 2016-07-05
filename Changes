@@ -1,0 +1,11 @@
+Changes since beta version
+-----------------------------
+
+- child term handler improvements
+- add built-in commands (besides 'exit'): cd, pwd
+- pipeline support like: ls | sort | wc -l
+- ^C does not kill the shell process anymore
+
+
+
+
