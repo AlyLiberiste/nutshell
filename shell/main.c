@@ -50,9 +50,9 @@ char *prompt;
 int go_on = 1;			/* This variable controls the main loop. */
 
 void sigchld_handler (int sig) {
+   int status;
+     pid_t child;
     assert(sig == SIGCHLD);
-    int status;
-    pid_t child;
     while ((child = waitpid(-1, &status, WNOHANG)) > 0) {
         /*...do something with exited child's status */
     }

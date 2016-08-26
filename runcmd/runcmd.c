@@ -59,7 +59,7 @@ int runcmd (const char *command, int *result,  int *io) /* ToDO: const char* */
 {
   int pid, status, pipeid[2];
   int aux, total_args, i, tmp_result, is_nonblock;
-  char *args[RCMD_MAXARGS], *p, *cmd, buff;
+  char *args[RCMD_MAXARGS], *p, *cmd, buff[32];
   struct sigaction act;
   void *rp;
 
@@ -158,7 +158,7 @@ int runcmd (const char *command, int *result,  int *io) /* ToDO: const char* */
 
       /*write one byte on pipe*/
       close(pipeid[0]); /*we don't want to read*/
-      buff = 0;
+      buff[0] = 0;
       write(pipeid[1], &buff, 1);
 
       if(is_nonblock)
@@ -170,7 +170,7 @@ int runcmd (const char *command, int *result,  int *io) /* ToDO: const char* */
       /*only reaches here if an error occured:
        * writes on more byte (error)
        * on pipe (error occurred)*/
-      buff = 1;
+      buff[0] = 1;
       write(pipeid[1], &buff, 1);
 
       free (cmd);
