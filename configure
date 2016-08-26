@@ -635,9 +635,6 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
-LD_FLAGS
-C_FLAGS
-CPP_FLAGS
 CPP
 OTOOL64
 OTOOL
@@ -12246,9 +12243,6 @@ else
   am__fastdepCC_FALSE=
 fi
 
-
-
-CPP_FLAGS="--ansi -D_POSIX_C_SOURCE=200112L -Werror --pedantic-errors -Wall"
 
 
 

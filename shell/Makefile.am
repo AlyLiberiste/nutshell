@@ -17,11 +17,15 @@
 ##   You should have received a copy of the GNU General Public License
 ##   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AM_CPPFLAGS = -I$(top_srcdir)/runcmd
+AM_CPPFLAGS = -I$(srcdir)/runcmd
 
 bin_PROGRAMS = nutshell
 
 nutshell_SOURCES = main.c parser.c native_commands.c exec_pipeline.c user_level.c
 
+
 nutshell_LDADD = ../runcmd/libruncmd.la $(LIBOBJS) 
+
+
+
 
