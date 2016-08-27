@@ -69,9 +69,8 @@ LICENSE
 [GPLv3][license]
 
 NutShell, Copyright (c) 2016 
-Emanuel Valente <emanuelvalente@gmail.com>,
-2016 Ariella Yamada  <ariella.y.b@gmail> and Marcio Campos   <marciodscampos@gmail.com>
-NutShell is derived from [POSIX-eg][credits], Copyright (c) 2015 Monaco F. J. <<monaco@icmc.usp.br>>
+Emanuel Valente <emanuelvalente@gmail.com>, Ariella Yamada  <ariella.y.b@gmail> and Marcio Campos  <marciodscampos@gmail.com>
+NutShell is derived from [POSIX-eg][credits], Copyright (c) 2015 - Monaco F. J. <<monaco@icmc.usp.br>>
 
 This file is part of NutShell.
 
@@ -93,7 +92,3 @@ along with NutShell.  If not, see <http://www.gnu.org/licenses/>.
 [autotools]: <http://www.gnu.org/software/automake/manual/html_node/Autotools-Introduction.html>
 [license]: <COPYING>
 [credits]: <https://gitlab.com/monaco/posixeg>
-
-Copyright (c) 2016 Emanuel Valente <emanuelvalente@gmail.com>
-              2016 Ariella Yamada  <ariella.y.b@gmail> and
-              2016 Marcio Campos   <marciodscampos@gmail.com>
