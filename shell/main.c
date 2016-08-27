@@ -66,7 +66,7 @@ int main (int argc, char **argv)
 {
   buffer_t *command_line;
   int i=0, aux;
-  int result;
+  int result, pid, status;
   char *cmd;
   pipeline_t *pipeline;
 
@@ -137,8 +137,18 @@ int main (int argc, char **argv)
 		    if ( REDIRECT_STDIN(pipeline))
 		      exec_pipeline_redir_input(pipeline, i);
 
+		    /*pipes */
 		    else
-		      execute_pipeline(pipeline, NULL, pipeline->ncommands -1);
+		    {
+		      pid = fork();
+		      if(pid > 0)
+			wait(&status);
+		      else 
+		      {
+			execute_pipeline(pipeline, NULL, pipeline->ncommands -1);
+			return EXIT_SUCCESS;
+		      }
+		    }
 		}
 	    }/*IF FOREGROUND*/
 

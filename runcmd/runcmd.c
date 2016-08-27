@@ -100,7 +100,8 @@ int runcmd (const char *command, int *result,  int *io) /* ToDO: const char* */
 
   /*using pipe to discover if there was error of
   * execution: ex: ./foo (=wont set EXECOK)*/
-  pipe(pipeid);
+  aux = pipe(pipeid);
+  sysfail(aux <0, -1);
 
   /* Create a subprocess. */
   pid = fork();
@@ -159,7 +160,8 @@ int runcmd (const char *command, int *result,  int *io) /* ToDO: const char* */
       /*write one byte on pipe*/
       close(pipeid[0]); /*we don't want to read*/
       buff[0] = 0;
-      write(pipeid[1], &buff, 1);
+      aux = write(pipeid[1], &buff, 1);
+      sysfail(aux <0, -1);
 
       if(is_nonblock)
         /*fix me*/
@@ -171,7 +173,8 @@ int runcmd (const char *command, int *result,  int *io) /* ToDO: const char* */
        * writes on more byte (error)
        * on pipe (error occurred)*/
       buff[0] = 1;
-      write(pipeid[1], &buff, 1);
+      aux = write(pipeid[1], &buff, 1);
+      sysfail(aux <0, -1);
 
       free (cmd);
       close(pipeid[1]);

@@ -47,8 +47,8 @@ int parse_native_command(pipeline_t *pipeline, int index)
   /*process args*/
   for (j=1; pipeline->command[index][j]; j++)
     {
-      strncat(cmd, " ", MAX_BUFF_COMMAND);
-      strncat(cmd, pipeline->command[index][j], MAX_BUFF_COMMAND);
+      strncat(cmd, " ", MAX_BUFF_COMMAND -1);
+      strncat(cmd, pipeline->command[index][j], MAX_BUFF_COMMAND -1);
     }
 
   while(native_commands[i])

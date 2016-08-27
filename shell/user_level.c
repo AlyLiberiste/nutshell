@@ -25,6 +25,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 #include <string.h>
 
 char *get_prompt()
@@ -32,9 +34,16 @@ char *get_prompt()
   char *login;
   char *prompt;
   unsigned char prompt_total_bytes;
+  struct passwd *user_data;
+  uid_t user_id;
+
+  /*get uid*/
+  user_id = getuid();
+  /*get all user info*/
+  user_data = getpwuid(user_id);
 
   /*get login name*/
-  login = getlogin();
+  login = user_data->pw_name;
 
   /*@NutShell]$: (13 chars) + '[' login size*/
   prompt_total_bytes = (sizeof(char) * 13) + (sizeof(char) * (strlen(login) + 2) );

@@ -52,8 +52,8 @@ void exec_pipeline_one_command(pipeline_t *pipeline)
   /*process args*/
   for (j=1; pipeline->command[0][j]; j++)
     {
-      strncat(cmd, " ", MAX_BUFF_COMMAND);
-      strncat(cmd, pipeline->command[0][j], MAX_BUFF_COMMAND);
+      strncat(cmd, " ", MAX_BUFF_COMMAND -1);
+      strncat(cmd, pipeline->command[0][j], MAX_BUFF_COMMAND -1);
     }
 
       runcmd(cmd, &result, NULL);
@@ -71,14 +71,14 @@ void exec_pipeline_redir_input(pipeline_t *pipeline, int index)
   /*prepares cmd buffer*/
   cmd = (char*)malloc(sizeof(char) * MAX_BUFF_COMMAND);
 
-  strncpy(cmd, pipeline->command[index][0], MAX_BUFF_COMMAND);
+  strncpy(cmd, pipeline->command[index][0], MAX_BUFF_COMMAND -1);
 
 
   /*process args*/
   for (j=1; pipeline->command[index][j]; j++)
     {
       strncat(cmd, " ", MAX_BUFF_COMMAND);
-      strncat(cmd, pipeline->command[index][j], MAX_BUFF_COMMAND);
+      strncat(cmd, pipeline->command[index][j], MAX_BUFF_COMMAND -1);
     }
 
   tmp = open(pipeline->file_in, O_RDONLY);
@@ -106,14 +106,14 @@ void exec_pipeline_redir_output(pipeline_t *pipeline, int index)
   /*prepares cmd buffer*/
   cmd = (char*)malloc(sizeof(char) * MAX_BUFF_COMMAND);
 
-  strncpy(cmd, pipeline->command[index][0], MAX_BUFF_COMMAND);
+  strncpy(cmd, pipeline->command[index][0], MAX_BUFF_COMMAND -1);
 
 
   /*process args*/
   for (j=1; pipeline->command[index][j]; j++)
     {
       strncat(cmd, " ", MAX_BUFF_COMMAND);
-      strncat(cmd, pipeline->command[index][j], MAX_BUFF_COMMAND);
+      strncat(cmd, pipeline->command[index][j], MAX_BUFF_COMMAND -1);
     }
 
   tmp = open(pipeline->file_out, O_CREAT | O_TRUNC | O_RDWR , S_IRUSR | S_IWUSR);
@@ -147,7 +147,7 @@ void exec_pipeline_redir_input_output(pipeline_t *pipeline, int index)
   for (j=1; pipeline->command[index][j]; j++)
     {
       strncat(cmd, " ", MAX_BUFF_COMMAND);
-      strncat(cmd, pipeline->command[index][j], MAX_BUFF_COMMAND);
+      strncat(cmd, pipeline->command[index][j], MAX_BUFF_COMMAND -1);
     }
 
   tmp1 = open(pipeline->file_in, O_RDONLY);
@@ -168,12 +168,12 @@ void exec_pipeline_redir_input_output(pipeline_t *pipeline, int index)
 
 
 
-void execute_pipeline(pipeline_t * pipeline, int pipeA[2], int index)
+int execute_pipeline(pipeline_t * pipeline, int pipeA[2], int index)
 {
   int pid, pipeB[2], ret;
 
   if (index < 0)
-    return;
+    return -1;
 
   if (index > 0) {
       ret = pipe(pipeB);
@@ -190,14 +190,16 @@ void execute_pipeline(pipeline_t * pipeline, int pipeA[2], int index)
       /* Not last, redirect input */
       if (index > 0) {
           close(0);
-          dup(pipeB[0]);
+          ret = dup(pipeB[0]);
+	  sysfail(ret <0, -1);
           close(pipeB[0]);
         }
 
       /* Not first, redirect output */
       if (index < pipeline->ncommands - 1) {
           close(1);
-          dup(pipeA[1]);
+          ret = dup(pipeA[1]);
+	  sysfail(ret <0, -1);
           close(pipeA[1]);
         }
       else
@@ -212,7 +214,7 @@ void execute_pipeline(pipeline_t * pipeline, int pipeA[2], int index)
       /* Child: recurse */
     } else {
       execute_pipeline(pipeline, pipeB, index - 1);
-      return;
+      return EXIT_SUCCESS;
     }
 
 }
